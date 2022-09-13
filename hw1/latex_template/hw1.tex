@@ -1,0 +1,732 @@
+\documentclass[11pt,addpoints,answers]{exam}
+
+%-----------------------------------------------------------------------------
+% PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%-----------------------------------------------------------------------------
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amsfonts}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{url}
+\usepackage{xfrac}
+\usepackage{natbib}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{paralist}
+\usepackage{epstopdf}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{environ}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{caption}
+\usepackage{parskip} % For NIPS style paragraphs.
+\usepackage[compact]{titlesec} % Less whitespace around titles
+\usepackage[inline]{enumitem} % For inline enumerate* and itemize*
+\usepackage{datetime}
+\usepackage{comment}
+% \usepackage{minted}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[final]{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes,decorations}
+\usepackage{framed}
+\usepackage{booktabs}
+\usepackage{cprotect}
+\usepackage{verbatimbox}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{mathtools} % For drcases
+\usepackage{cancel}
+\usepackage[many]{tcolorbox}
+\usepackage{soul}
+\usepackage[bottom]{footmisc}
+\usepackage{bm}
+\usepackage{wasysym}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{positioning, arrows, automata, calc}
+
+\newtcolorbox[]{your_solution}[1][]{
+    % breakable,
+    enhanced,
+    nobeforeafter,
+    colback=white,
+    title=Your Answer,
+    sidebyside align=top,
+    box align=top,
+    #1
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Formatting for \CorrectChoice of "exam" %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\CorrectChoiceEmphasis{}
+\checkedchar{\blackcircle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Rotated Column Headers                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{adjustbox}
+\usepackage{array}
+
+%https://tex.stackexchange.com/questions/32683/rotated-column-titles-in-tabular
+
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+\newcommand*\rot{\multicolumn{1}{R{45}{1em}}}% no optional argument here, please!
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom commands                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\newcommand{\adj}[1]{\frac{d J}{d #1}}
+\newcommand{\chain}[2]{\adj{#2} = \adj{#1}\frac{d #1}{d #2}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\blackcircle}{\tikz\draw[black,fill=black] (0,0) circle (1ex);}
+\renewcommand{\circle}{\tikz\draw[black] (0,0) circle (1ex);}
+
+\newcommand{\emptysquare}{{\LARGE $\square$}\ \ }
+\newcommand{\filledsquare}{{\LARGE $\blacksquare$}\ \ }
+\newcommand{\emptycircle}{{\LARGE $\fullmoon$}\ \ }
+\newcommand{\filledcircle}{{\LARGE $\newmoon$}\ \ }
+
+\newcommand{\ntset}{test}
+
+% mathcal
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\Bc}{\mathcal{B}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Gc}{\mathcal{G}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Ic}{\mathcal{I}}
+\newcommand{\Jc}{\mathcal{J}}
+\newcommand{\Kc}{\mathcal{K}}
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\Mc}{\mathcal{M}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Qc}{\mathcal{Q}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Sc}{\mathcal{S}}
+\newcommand{\Tc}{\mathcal{T}}
+\newcommand{\Uc}{\mathcal{U}}
+\newcommand{\Vc}{\mathcal{V}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\Xc}{\mathcal{X}}
+\newcommand{\Yc}{\mathcal{Y}}
+\newcommand{\Zc}{\mathcal{Z}}
+
+% mathbb
+\newcommand{\Ab}{\mathbb{A}}
+\newcommand{\Bb}{\mathbb{B}}
+\newcommand{\Cb}{\mathbb{C}}
+\newcommand{\Db}{\mathbb{D}}
+\newcommand{\Eb}{\mathbb{E}}
+\newcommand{\Fb}{\mathbb{F}}
+\newcommand{\Gb}{\mathbb{G}}
+\newcommand{\Hb}{\mathbb{H}}
+\newcommand{\Ib}{\mathbb{I}}
+\newcommand{\Jb}{\mathbb{J}}
+\newcommand{\Kb}{\mathbb{K}}
+\newcommand{\Lb}{\mathbb{L}}
+\newcommand{\Mb}{\mathbb{M}}
+\newcommand{\Nb}{\mathbb{N}}
+\newcommand{\Ob}{\mathbb{O}}
+\newcommand{\Pb}{\mathbb{P}}
+\newcommand{\Qb}{\mathbb{Q}}
+\newcommand{\Rb}{\mathbb{R}}
+\newcommand{\Sb}{\mathbb{S}}
+\newcommand{\Tb}{\mathbb{T}}
+\newcommand{\Ub}{\mathbb{U}}
+\newcommand{\Vb}{\mathbb{V}}
+\newcommand{\Wb}{\mathbb{W}}
+\newcommand{\Xb}{\mathbb{X}}
+\newcommand{\Yb}{\mathbb{Y}}
+\newcommand{\Zb}{\mathbb{Z}}
+
+% mathbf lowercase
+\newcommand{\av}{\mathbf{a}}
+\newcommand{\bv}{\mathbf{b}}
+\newcommand{\cv}{\mathbf{c}}
+\newcommand{\dv}{\mathbf{d}}
+\newcommand{\ev}{\mathbf{e}}
+\newcommand{\fv}{\mathbf{f}}
+\newcommand{\gv}{\mathbf{g}}
+\newcommand{\hv}{\mathbf{h}}
+\newcommand{\iv}{\mathbf{i}}
+\newcommand{\jv}{\mathbf{j}}
+\newcommand{\kv}{\mathbf{k}}
+\newcommand{\lv}{\mathbf{l}}
+\newcommand{\mv}{\mathbf{m}}
+\newcommand{\nv}{\mathbf{n}}
+\newcommand{\ov}{\mathbf{o}}
+\newcommand{\pv}{\mathbf{p}}
+\newcommand{\qv}{\mathbf{q}}
+\newcommand{\rv}{\mathbf{r}}
+\newcommand{\sv}{\mathbf{s}}
+\newcommand{\tv}{\mathbf{t}}
+\newcommand{\uv}{\mathbf{u}}
+\newcommand{\vv}{\mathbf{v}}
+\newcommand{\wv}{\mathbf{w}}
+\newcommand{\xv}{\mathbf{x}}
+\newcommand{\yv}{\mathbf{y}}
+\newcommand{\zv}{\mathbf{z}}
+
+% mathbf uppercase
+\newcommand{\Av}{\mathbf{A}}
+\newcommand{\Bv}{\mathbf{B}}
+\newcommand{\Cv}{\mathbf{C}}
+\newcommand{\Dv}{\mathbf{D}}
+\newcommand{\Ev}{\mathbf{E}}
+\newcommand{\Fv}{\mathbf{F}}
+\newcommand{\Gv}{\mathbf{G}}
+\newcommand{\Hv}{\mathbf{H}}
+\newcommand{\Iv}{\mathbf{I}}
+\newcommand{\Jv}{\mathbf{J}}
+\newcommand{\Kv}{\mathbf{K}}
+\newcommand{\Lv}{\mathbf{L}}
+\newcommand{\Mv}{\mathbf{M}}
+\newcommand{\Nv}{\mathbf{N}}
+\newcommand{\Ov}{\mathbf{O}}
+\newcommand{\Pv}{\mathbf{P}}
+\newcommand{\Qv}{\mathbf{Q}}
+\newcommand{\Rv}{\mathbf{R}}
+\newcommand{\Sv}{\mathbf{S}}
+\newcommand{\Tv}{\mathbf{T}}
+\newcommand{\Uv}{\mathbf{U}}
+\newcommand{\Vv}{\mathbf{V}}
+\newcommand{\Wv}{\mathbf{W}}
+\newcommand{\Xv}{\mathbf{X}}
+\newcommand{\Yv}{\mathbf{Y}}
+\newcommand{\Zv}{\mathbf{Z}}
+
+% bold greek lowercase
+\newcommand{\alphav     }{\boldsymbol \alpha     }
+\newcommand{\betav      }{\boldsymbol \beta      }
+\newcommand{\gammav     }{\boldsymbol \gamma     }
+\newcommand{\deltav     }{\boldsymbol \delta     }
+\newcommand{\epsilonv   }{\boldsymbol \epsilon   }
+\newcommand{\varepsilonv}{\boldsymbol \varepsilon}
+\newcommand{\zetav      }{\boldsymbol \zeta      }
+\newcommand{\etav       }{\boldsymbol \eta       }
+\newcommand{\thetav     }{\boldsymbol \theta     }
+\newcommand{\varthetav  }{\boldsymbol \vartheta  }
+\newcommand{\iotav      }{\boldsymbol \iota      }
+\newcommand{\kappav     }{\boldsymbol \kappa     }
+\newcommand{\varkappav  }{\boldsymbol \varkappa  }
+\newcommand{\lambdav    }{\boldsymbol \lambda    }
+\newcommand{\muv        }{\boldsymbol \mu        }
+\newcommand{\nuv        }{\boldsymbol \nu        }
+\newcommand{\xiv        }{\boldsymbol \xi        }
+\newcommand{\omicronv   }{\boldsymbol \omicron   }
+\newcommand{\piv        }{\boldsymbol \pi        }
+\newcommand{\varpiv     }{\boldsymbol \varpi     }
+\newcommand{\rhov       }{\boldsymbol \rho       }
+\newcommand{\varrhov    }{\boldsymbol \varrho    }
+\newcommand{\sigmav     }{\boldsymbol \sigma     }
+\newcommand{\varsigmav  }{\boldsymbol \varsigma  }
+\newcommand{\tauv       }{\boldsymbol \tau       }
+\newcommand{\upsilonv   }{\boldsymbol \upsilon   }
+\newcommand{\phiv       }{\boldsymbol \phi       }
+\newcommand{\varphiv    }{\boldsymbol \varphi    }
+\newcommand{\chiv       }{\boldsymbol \chi       }
+\newcommand{\psiv       }{\boldsymbol \psi       }
+\newcommand{\omegav     }{\boldsymbol \omega     }
+
+% bold greek uppercase
+\newcommand{\Gammav     }{\boldsymbol \Gamma     }
+\newcommand{\Deltav     }{\boldsymbol \Delta     }
+\newcommand{\Thetav     }{\boldsymbol \Theta     }
+\newcommand{\Lambdav    }{\boldsymbol \Lambda    }
+\newcommand{\Xiv        }{\boldsymbol \Xi        }
+\newcommand{\Piv        }{\boldsymbol \Pi        }
+\newcommand{\Sigmav     }{\boldsymbol \Sigma     }
+\newcommand{\Upsilonv   }{\boldsymbol \Upsilon   }
+\newcommand{\Phiv       }{\boldsymbol \Phi       }
+\newcommand{\Psiv       }{\boldsymbol \Psi       }
+\newcommand{\Omegav     }{\boldsymbol \Omega     }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code highlighting with listings         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+\definecolor{light-gray}{gray}{0.95}
+
+\newcommand{\MYhref}[3][blue]{\href{#2}{\color{#1}{#3}}}%
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinelanguage{Shell}{
+  keywords={tar, cd, make},
+  %keywordstyle=\color{bluekeywords}\bfseries,
+  alsoletter={+},
+  ndkeywords={python, py, javac, java, gcc, c, g++, cpp, .txt, octave, m, .tar},
+  %ndkeywordstyle=\color{bluekeywords}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  %stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]",
+  backgroundcolor = \color{light-gray}
+}
+
+\lstset{columns=fixed, basicstyle=\ttfamily,
+    backgroundcolor=\color{light-gray},xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom box for highlights               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define box and box title style
+\tikzstyle{mybox} = [fill=blue!10, very thick,
+    rectangle, rounded corners, inner sep=1em, inner ysep=1em]
+
+% \newcommand{\notebox}[1]{
+% \begin{tikzpicture}
+% \node [mybox] (box){%
+%     \begin{minipage}{\textwidth}
+%     #1
+%     \end{minipage}
+% };
+% \end{tikzpicture}%
+% }
+
+\NewEnviron{notebox}{
+\begin{tikzpicture}
+\node [mybox] (box){
+    \begin{minipage}{\textwidth}
+        \BODY
+    \end{minipage}
+};
+\end{tikzpicture}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Commands showing / hiding solutions     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% To HIDE SOLUTIONS (to post at the website for students), set this value to 0: 
+\def\issoln{0}
+% Some commands to allow solutions to be embedded in the assignment file.
+\ifcsname issoln\endcsname \else \def\issoln{1} \fi
+% Default to an empty solutions environ.
+\NewEnviron{soln}{}{}
+\if\issoln 1
+% Otherwise, include solutions as below.
+\RenewEnviron{soln}{
+    \leavevmode\color{red}\ignorespaces
+    % \textbf{Solution} \BODY
+    \BODY
+}{}
+\fi
+
+%% qauthor environment:
+% Default to an empty qauthor environ.
+\NewEnviron{qauthor}{}{}
+%% To HIDE TAGS set this value to 0:
+\def\showtags{0}
+%%%%%%%%%%%%%%%%
+\ifcsname showtags\endcsname \else \def\showtags{1} \fi
+% Default to an empty tags environ.
+\NewEnviron{tags}{}{}
+\if\showtags 1
+% Otherwise, include solutions as below.
+\RenewEnviron{tags}{
+    \fbox{
+    \leavevmode\color{blue}\ignorespaces
+    \textbf{TAGS:} \texttt{\url{\BODY}}
+    }
+    \vspace{-.5em}
+}{}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Commands for customizing the assignment %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\courseName}{10-418/10-618 Machine Learning for Structured Data (Fall 2022)}
+\newcommand{\hwName}{Homework 1: Neural Networks for Sequence Tagging}
+\newcommand{\dueDate}{Friday, September 16th}
+\newcommand{\homeworktype}{\string programming}
+
+\title{\textsc{\hwName}
+%\thanks{Compiled on \today{} at \currenttime{}}
+} % Title
+
+
+\author{\courseName\\
+\url{http://www.cs.cmu.edu/~mgormley/courses/10418/} \\
+OUT: Wednesday, September 7th \\
+DUE: \dueDate{} \\ 
+TAs: Mukuntha, Harnoor, Eric
+}
+
+\date{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Useful commands for typesetting the questions %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand \expect {\mathbb{E}}
+\newcommand \mle [1]{{\hat #1}^{\rm MLE}}
+\newcommand \map [1]{{\hat #1}^{\rm MAP}}
+\newcommand \argmax {\operatorname*{argmax}}
+\newcommand \argmin {\operatorname*{argmin}}
+\newcommand \code [1]{{\tt #1}}
+\newcommand \datacount [1]{\#\{#1\}}
+\newcommand \ind [1]{\mathbb{I}\{#1\}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document configuration %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Don't display a date in the title and remove the white space
+\predate{}
+\postdate{}
+\date{}
+
+% Don't display an author and remove the white space
+%\preauthor{}
+%\postauthor{}
+
+% Solo and group questions
+\newcommand{\solo}{\textbf{[SOLO]} }
+\newcommand{\group}{\textbf{[GROUP]} }
+
+% Question type commands
+\newcommand{\sall}{\textbf{Select all that apply: }}
+\newcommand{\sone}{\textbf{Select one: }}
+\newcommand{\tf}{\textbf{True or False: }}
+
+% AdaBoost commands
+\newcommand{\trainerr}[1]{\hat{\epsilon}_S \left(#1\right)}
+\newcommand{\generr}[1]{\epsilon \left(#1\right)}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\margin}{\text{margin}}
+\newcommand{\sign}{\text{sign}}
+\newcommand{\PrS}{\hat{\Pr_{(x_i, y_i) \sim S}}}
+\newcommand{\PrSinline}{\hat{\Pr}_{(x_i, y_i) \sim S}}  % inline PrS
+
+% Abhi messing around with examdoc
+\qformat{\textbf{{\Large \thequestion \; \; \thequestiontitle \ (\totalpoints \ points)}} \hfill}
+\renewcommand{\thequestion}{\arabic{question}}
+\renewcommand{\questionlabel}{\thequestion.}
+
+\renewcommand{\thepartno}{\arabic{partno}}
+\renewcommand{\partlabel}{\thepartno.}
+\renewcommand{\partshook}{\setlength{\leftmargin}{0pt}}
+
+\renewcommand{\thesubpart}{\alph{subpart}}
+\renewcommand{\subpartlabel}{(\thesubpart)}
+
+\renewcommand{\thesubsubpart}{\roman{subsubpart}}
+\renewcommand{\subsubpartlabel}{\thesubsubpart.}
+
+% copied from stack overflow, as all good things are
+\newcommand\invisiblesection[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \sectionmark{#1}}
+
+% quite possibly the worst workaround i have made for this class
+\newcommand{\sectionquestion}[1]{
+\titledquestion{#1}
+\invisiblesection{#1}
+~\vspace{-1em}
+}
+
+%%%%%%%%%%%%%%%%%%
+% Begin Document %
+%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%
+% Begin Document %
+%%%%%%%%%%%%%%%%%% 
+
+\begin{document}
+
+\maketitle
+
+\newcommand \maxsubs {10 }
+\section*{START HERE: Instructions}
+\begin{itemize}
+
+\item \textbf{Collaboration Policy}: Please read the collaboration policy here: \url{http://www.cs.cmu.edu/~mgormley/courses/10418/syllabus.html}
+
+\item\textbf{Late Submission Policy:} See the late submission policy here: \url{http://www.cs.cmu.edu/~mgormley/courses/10418/syllabus.html}
+
+\item\textbf{Submitting your work:} You will use Gradescope to submit
+  answers to all questions\ifthenelse{\equal{\homeworktype}{\string written}}{}{ and code}. Please
+  follow instructions at the end of this PDF to correctly submit all your code to Gradescope.
+
+  \begin{itemize}
+    
+   \item \textbf{Written:} For written problems such as short answer, multiple choice, derivations, proofs, or plots, please use the provided template. Submissions can be handwritten onto the template, but should be labeled and clearly legible. If your writing is not legible, you will not be awarded marks. Alternatively, submissions can be written in LaTeX. Each derivation/proof should be completed in the boxes provided. You are responsible for ensuring that your submission contains exactly the same number of pages and the same alignment as our PDF template. If you do not follow the template, your assignment may not be graded correctly by our AI assisted grader.
+
+  \ifthenelse{\equal{\homeworktype}{\string written}}{}{
+\item \textbf{Programming:} You will submit your code for programming questions on the homework to Gradescope (\url{https://gradescope.com}). After uploading your code, our grading scripts will autograde your assignment by running your program in a Docker container. When you are developing, check that the version number of the programming language environment (e.g. Python 3.10.4) and versions of permitted libraries (e.g.  \texttt{numpy} 1.23.2 and \texttt{PyTorch} 1.12.1) match those used on Gradescope. You have \maxsubs free Gradescope programming submissions. After \maxsubs submissions, you will begin to lose points from your total programming score. We recommend debugging your implementation on your local machine (or the Linux servers) and making sure your code is running correctly first before submitting your code to Gradescope.}
+
+  \end{itemize}
+  
+\ifthenelse{\equal{\homeworktype}{\string written}}{}{\item\textbf{Materials:} The data and reference output that you will need in order to complete this assignment is posted along with the writeup and template on the course website.}
+
+\end{itemize}
+\clearpage
+
+{\LARGE \bf Written Questions (\numpoints \ points)}
+
+
+\begin{questions}
+\sectionquestion{Background Reading}
+
+A key outcome of this homework assignment is familiarizing yourself with two libraries: PyTorch for module-based automatic differentiation and optimization and Weights \& Biases for logging/plotting. Towards that end, if you have never used these libraries before, you should expect to spend significant time reading the documentation for them in addition to attending recitation. 
+
+To emphasize that reading the documentation is a required step in this homework, you should complete the following readings (at least) before you begin. 
+
+\begin{itemize}
+
+    \item PyTorch Tutorial. At a bare minimum, you should read the Quickstart section before you begin. We recommend you also read the full collection of the Introduction to PyTorch, i.e. Learn the Basics $\|$ Quickstart $\|$ Tensors $\|$ Datasets \& DataLoaders $\|$ Transforms $\|$ Build Model $\|$ Autograd $\|$ Optimization $\|$ Save \& Load Model 
+    
+    \url{https://pytorch.org/tutorials/beginner/basics/intro.html}
+    
+    \item Weights \& Biases Tutorial. Please read the Quickstart.
+    
+    \url{https://docs.wandb.ai/quickstart}
+    
+\end{itemize}
+
+\begin{parts}
+
+% TODO: To select one of the options below, change \choice to \CorrectChoice.
+\part[1] \textbf{Select One:} Did you read the PyTorch tutorial (at least the Quickstart)?
+    \begin{checkboxes}
+     \choice Yes 
+     \choice No
+    \end{checkboxes}
+    
+% TODO: To select one of the options below, change \choice to \CorrectChoice.
+\part[1] \textbf{Select One:} Did you read the Weights \& Biases Quickstart tutorial?
+    \begin{checkboxes}
+     \choice Yes 
+     \choice No
+    \end{checkboxes}
+    
+\end{parts}
+
+\clearpage
+
+\begin{EnvFullwidth}
+\begin{notebox}
+The following questions should be completed as you work through the programming portion of this assignment. In the following three sections, plot the metrics and report metrics values such that your deep neural network has converged. For your reference, the TAs got convergence with the default hyperparameters (batch\_size = 64, learning\_rate = $1e-3$, epochs = 20) in the starter code.
+\end{notebox}
+\end{EnvFullwidth}
+
+\sectionquestion{Plot the metrics for ConvEncoder}
+\begin{parts}
+
+\part[3] Average Validation Accuracy
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+
+\part[3] Average Test Accuracy
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+    
+\clearpage
+
+\part[3] Loss Curve
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+    
+\end{parts}
+
+\sectionquestion{Plot the metrics for LSTMEncoder}
+
+\begin{parts}
+
+\part[2] Average Validation Accuracy
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+
+\clearpage
+
+\part[2] Average Test Accuracy
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+    
+\clearpage
+
+\part[2] Loss Curve
+
+    \begin{your_solution}[height=8cm]
+    % TODO: YOUR ANSWER 
+    \end{your_solution}
+    
+\end{parts}
+
+\sectionquestion{Test Results}
+
+\begin{parts}
+
+\part[6] Report the tag-wise test accuracy
+
+    \begin{tabular}{lll}
+        \toprule
+        POS Tag & Test Accuracy (ConvEncoder) & Test Accuracy (LSTMEncoder)\\
+        \midrule
+        NOUN & & \\ %TODO: your-answer-here
+        VERB & & \\ %TODO: your-answer-here
+        ADJ & & \\ %TODO: your-answer-here
+        PRON & & \\ %TODO: your-answer-here
+        PROPN & & \\ %TODO: your-answer-here
+        ADV & & \\ %TODO: your-answer-here
+        \bottomrule
+    \end{tabular}
+
+    
+\end{parts}\newpage
+\section{Collaboration Questions}
+
+After you have completed all other components of this assignment, report your answers to these questions regarding the collaboration policy. Details of the policy can be found \href{http://www.cs.cmu.edu/~mgormley/courses/10601/syllabus.html}{here}.
+\begin{enumerate}
+    \item Did you receive any help whatsoever from anyone in solving this assignment? If so, include full details.
+    \item Did you give any help whatsoever to anyone in solving this assignment? If so, include full details.
+    \item Did you find or come across code that implements any part of this assignment? If so, include full details.
+\end{enumerate}
+
+\begin{your_solution}[height=6cm]
+% YOUR ANSWER 
+
+\end{your_solution}
+\end{questions}
+
+\newpage
+\section{Programming (60 points)}
+
+\subsection{Setting up your environment}
+
+Please do the following before beginning this programming assignment.
+\begin{enumerate}
+    \item Install Python using Miniconda \url{https://docs.conda.io/en/latest/miniconda.html}
+    \item Install pytorch using Conda \url{https://pytorch.org/}
+    \item Intall the \lstinline{tqdm} package with \lstinline{pip install tqdm}
+    \item Create a free Weights \& Biases account at \url{https://wandb.ai}. Then install the \lstinline{wandb} package with \lstinline{pip install wandb} followed by \lstinline{wandb login}
+    \item Read the \lstinline{README.md} file, and extract the \lstinline{data/csv_data.tar.gz} file into the \lstinline{data/} directory.
+\end{enumerate}
+
+\subsection{Problem Description}
+\label{subsec:problem_description}
+
+In this assignment, you will be implementing sequence labelling models to perform Part of Speech (POS) tagging. Given an input sentence $\xv = [x_1, x_2, \ldots, x_T]$ where $x_t$ are tokens, the task is to predict a sequence of POS tags $\yv = [y_1, y_2, \ldots, y_T]$, where $y_t$ is the POS tag corresponding to token $x_t$. Here, we have $y_t \in \Tc, \forall t$, where $\Tc = \{l_1, l_2, ... l_L\}$ is the set of POS tags.
+
+We ask you to implement two models, one based on a one-dimensional Convolutional Neural Network (CNN), and another that uses a bidirectional LSTM. First, we construct a vocabulary of all the word tokens from the training data, and use this to convert input sentences into a sequence of token indices. Both models use a learnable embedding layer, that take in an input sequence $\xv = [x_1, x_2, ..., x_T]$ of token indices and encode them into their corresponding embeddings $\ev = [\ev_1, \ev_2, ..., \ev_T]$, where each embedding is a fixed length vector $\ev_t \in \Rb^d$ corresponds to a token index $x_t$. Then the CNN or the bidirectional LSTM is used to produce a sequence of representations $\hv = [\hv_1, \hv_2, \ldots, \hv_T]$ corresponding to each input token. Each representation $\hv_t$ is then passed through a feed-forward layer to predict the POS tag $y_t$ corresponding to $x_t$.
+
+\subsection{Handling Data}
+The data we will use for this assignment comes from Universal Dependencies (UD)\footnote{\url{https://universaldependencies.org}} which is a framework for consistent annotation of grammar across different human languages. More information on this dataset can be found here: . The dataset we will use is the English ParTUT data. The original data follows the CoNLL-U format\footnote{\url{https://universaldependencies.org/format.html}}. However, we have preprocessed this data into a more convenient .csv format.
+
+The code to handle the data is given to you and can be found in the \lstinline{data_utils.py} file. The \lstinline{load_conllu()} method returns a list of sentences and a list of their corresponding POS tags. The \lstinline{Vocabulary} class  converts the sentences to a numerical tensor representation. Similarly, the \lstinline{Tags} class converts the POS tags to a numerical tensor representation.
+
+\subsection{Dataset Class for ParTUT}
+The \lstinline{Dataset} class handles the processing of the input data and their corresponding labels. Please refer to the official Pytorch's Dataset Class documentation for more information:
+\url{https://pytorch.org/tutorials/beginner/basics/data_tutorial.html}.
+
+The \lstinline{get_item()} method returns the sentence at index \textit{ind} and its corresponding POS tag sequence. Please make sure to return the numericalized sentence and POS tag sequence as numpy arrays. 
+
+The \lstinline{collate_fn} helps to batch the data. This method should return a list of sentence sequences as tensors and their corresponding POS tag sequences as tensors for one batch. In addition to this, you will pad the sentence and POS tags sequences in this method. Please read the comments in the code to understand how to correctly implement it.
+
+\subsection{Networks}
+
+\subsubsection{1D CNN: \lstinline{ConvEncoder}}
+The first model is a one dimensional Convolutional Neural Network. We ask you to implement a one-dimensional convolution operation with a flattened convolution kernel, using PyTorch operations - specifically by using padding, indexing, reshaping, the \lstinline{nn.Linear} layer, and the \lstinline{nn.GELU} layer, \textbf{without} using the \lstinline{nn.Conv1d} implementation from the library.
+
+The convolution model first uses an embedding layer, as specified in Section \ref{subsec:problem_description}. Then we define a convolutional filter $\Wv \in \mathbb{R}^{wd \times k}, \bv \in \mathbb{R}^{k}$ where $d$ is the token embedding dimension, $k$ is the output dimension for the convolution encoder, and $w$ is the window size of the convolution filter (the number of input tokens it uses in generating an output). We assume that $w$, the filter size is odd. The convolution layer generates an output representation $\hv_t$ corresponding to the input token embedding $\ev_t$ by calculating $\hv_t = \text{GELU}(\Wv^T \ev'_t + \bv)$ over the flattened input window $\ev'_t = [\ev_{t-(w-1)/2}, ..., \ev_{t+(w-1)/2}]$, st. $\ev'_t \in \mathbb{R}^{wd}$. When implementing this, we use zero padding of size $(w-1)/2$ on both sides of the input to ensure that we can generate representations corresponding to tokens in the beginning and at the end.
+
+We first ask you to implement \lstinline{get_windows()}, a function that takes an input of size\\ \lstinline{(B, input_len, emb_size)} of padded inputs, iterates over the input tensor with the provided window size, and generates an \lstinline{outputs} tensor, of shape \lstinline{(B, num_windows, window_size, emb_size)} where \lstinline{B} is the batch size, and the output tensor at \lstinline{outputs[i][j]} contains the window of unflattened input embeddings from placing the filter at the $j^{th}$ index from the start of the padded input tensor's $i^{th}$ datapoint. These input windows are then flattened into a tensor of $\ev'_t$s, which you are required to pass through the feed-forward layer that implements the convolution filter. After the convolution operation, use a GELU activation function (see \lstinline{nn.GELU}) to generate the final representations $\hv_t$.
+
+\begin{notebox}
+Recall that, although PyTorch implements a high-level module for convolution, the goal of this section is to familiarize you with the low-level modules and how they can be pieced together.
+\end{notebox}
+
+\subsubsection{Bidirectional LSTM: \lstinline{LSTMEncoder}}
+The second model is a two layer bidirectional LSTM. For this, you are allowed to use the \lstinline{nn.LSTM} module from PyTorch. In this module, implement an embedding layer similar to the \lstinline{ConvEncoder} and as described in Section \ref{subsec:problem_description}. Then use nn.LSTM to generate a sequence of representations $\hv_t$ corresponding to inputs $\hv_t$ using two stacked LSTMs. 
+
+\begin{notebox}
+Recall that, although you \textit{could} implement an LSTM layer from scratch using low-level modules in PyTorch, it would likely be very inefficient. The goal of this section is to familiarize you with how to read PyTorch documentation and employ the existing flexible high-level module for LSTMs.
+\end{notebox}
+
+\subsubsection{Feed Forward Neural Network: \lstinline{MLP}}
+This is the output layer of the network. Please implement a feed-forward neural network with one hidden layer of the given size, with an output dimension $L$, where $L$ is the number of POS tags (Section \ref{subsec:problem_description}). Use a tanh non-linearity on the hidden layer.
+
+\subsubsection{The Full Model: \lstinline{POSTagger}}
+This is a module we have implemented for you, that puts together the encoder and the MLP to obtain a POS tagger.
+
+\subsection{Training}
+Please complete the \lstinline{train_one_epoch()} and \lstinline{train()} methods so that the model can learn to perform the required task. In order to provide a demonstration of best practices, most of the code is implemented for this section. In order to learn model weights, we need to calculate the \lstinline{nn.CrossEntropyLoss()}. This method also handles the logging of various metrics using wandb.ai. More information about wandb.ai can be found here: \url{https://docs.wandb.ai}. Please sign up at wandb.ai and refer to the recitation for a brief overview of this tool for logging. If you do not want to log any run, you can set the \lstinline{use_wandb} flag to \lstinline{False}.
+
+\subsection{Evaluation:}
+To evaluate the model on the dev (validation) dataset, we compute accuracy (already implemented). Most of the evaluate method is also implemented. Refer to the starter code to finish this method. In addition to the average accuracy, accuracy per POS tag has also been calculated and is logged at wandb.ai. 
+
+\subsection{Submission Checklist}
+\begin{itemize}
+    \item \textbf{Finish the TODOs:} 
+    Please complete the TODOs in the starter code to finish the assignment. 
+    \item \textbf{Submit to Autolab:} 
+    Set the \lstinline{use_wandb} flag to \lstinline{False} and submit the code to the programming slot on Gradescope.
+    \item \textbf{Plot the metrics:} 
+    Setting the \lstinline{use_wandb} flag to \lstinline{True}, plot the metrics on wandb and attach the screenshots in the PDF and submit the PDF to the written slot on Gradescope.
+\end{itemize}
+
+
+\clearpage
+
+
+
+\end{document}
