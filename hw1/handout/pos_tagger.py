@@ -22,9 +22,10 @@ def pad_sequences(batch, pad_index):
     # pad
     for i in range(len(batch)):
         no_pad_tokens = max - len(batch[i])  # get number of padding tokens
-        batch[i] = torch.cat([batch[i], torch.full((no_pad_tokens,), pad_index)])
+        batch[i] = torch.cat([batch[i], torch.full((no_pad_tokens,), pad_index)]).numpy()
         assert len(batch[i]) == max
-    return batch
+
+    return batch  # Please make sure to return the numericalized sentence and POS tag sequence as numpy arrays.
 
 
 class parTUTDataset(torch.utils.data.Dataset):
@@ -65,14 +66,14 @@ class parTUTDataset(torch.utils.data.Dataset):
 
         '''
 
-        batch_x = [torch.from_numpy(x) for x, y in batch]
+        batch_x = np.array([torch.from_numpy(x) for x, y in batch])
         # TODO: Zero-pad the sequences in batch_x and collate into a single tensor "batch_x"
         #  of shape (batch_size, max_seq_len) where max_seq_len is the longest sequence in the input
         # raise NotImplementedError("Please implement the TODO here!")
         # get the size of the  longest sequence
         batch_x = pad_sequences(batch_x, 0)
 
-        batch_y = [torch.from_numpy(y) for x, y in batch]
+        batch_y = np.array([torch.from_numpy(y) for x, y in batch])
         # TODO: Pad the sequences in batch_y with -100, and collate into a single tensor "batch_y"
         #  of shape (batch_size, max_seq_len) where max_seq_len is the longest sequence in the input
         #  Please see https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html to understand
@@ -120,7 +121,6 @@ class ConvEncoder(nn.Module):
         # '''calculate window size -- from outputs of get_windows
         # outputs.shape: (B, num_windows, window_size, emb_size)'''
         self.linear_layer = nn.Sequential(
-            nn.Flatten(),  # might have to specify dimensions here!
             nn.Linear(emb_size * window_size, out_size),
             nn.GELU())
 
@@ -144,18 +144,23 @@ class ConvEncoder(nn.Module):
         # TODO: Slide a window of size 'window_size' along the input tensor and stack slices
         #  such that the outputs for the i'th sample and the j'th window go into outputs[i, j]
         # raise NotImplementedError("Please implement the TODO here!")
-        outputs = []
         batch_size = len(padded_inputs)
         input_len = len(padded_inputs[0])
+        print(f'INPUT LEN{ input_len}')
+
+        embed_size = len(padded_inputs[0][0])
+
+        #working assumption == number of windows = input_length
+        no_pads = ((window_size - 1) // 2)*2
+        outputs = torch.empty(batch_size,input_len-no_pads, window_size, embed_size)
+
         for i in range(batch_size):
             for j in range(input_len):
-                output = []
                 if (j + window_size) <= input_len:  # check for boundaries
-                    for k in range(window_size):
-                        output.append(padded_inputs[i][j + k])
-                    outputs.append(output)
-        outputs = torch.tensor(outputs)
-        assert outputs.size(2) == window_size
+                    output = padded_inputs[i][j: j + window_size]
+                    outputs[i][j]=output
+
+
         return outputs
 
     def forward(self, x):
@@ -174,32 +179,37 @@ class ConvEncoder(nn.Module):
         batch_size = x.size(0)
         max_seq_len = x.size(1)
 
+
         # TODO: Obtain embeddings for the input indices
-        embeddings = self.embeddings(x)
+        embeddings = self.embeddings(x, )
         # raise NotImplementedError("Please implement the TODO here!")
 
         # TODO: Zero-pad the inputs to the convolution layer to ensure we get an output sequence of the
         #  same length as the input sequence
         no_pads = (
-                              self.window_size - 1) // 2  # source: https://www.quora.com/What-if-I-want-a-same-dimensional-Output-as-Input-with-filter-F-x-F-stride-2-and-using-zero-padding-in-Convolutional-Neural-Network
+                          self.window_size - 1) // 2  # source: https://www.quora.com/What-if-I-want-a-same-dimensional-Output-as-Input-with-filter-F-x-F-stride-2-and-using-zero-padding-in-Convolutional-Neural-Network
         # x dimension so far is  (B, max_seq_len, emb_size)
-        print(f'expected : B - {batch_size }, max_seq_len - {max_seq_len}, emb_size- {self.emb_size}')
-        print(f'actual : {embeddings.shape}')
+
         pad = (0, 0, no_pads, no_pads)  # https://pytorch.org/docs/stable/generated/torch.nn.functional.pad.html
         # assuming x is a tenser
         padded_input = F.pad(embeddings, pad, "constant", 0)
         # raise NotImplementedError("Please implement the TODO here!")
 
         # TODO: Get inputs for the convolution layer using ConvEncoder.get_windows
-        x = self.get_windows(padded_input, self.window_size)
+        x = ConvEncoder.get_windows(padded_input, self.window_size)
+        print(f' expected (B {batch_size} num_windows, window_size {self.window_size}, emb_size {self.emb_size})')
+        # print(f'out = {x.shape}')
+        # import sys
+        # sys.exit(1)
+
         # raise NotImplementedError("Please implement the TODO here!")
 
         # Unroll windows to pass through the linear layer
         x = x.view(batch_size, max_seq_len, -1)
 
         # TODO: Pass the outputs through the flattened conv kernel and a GELU activation
-        x = ...
-        raise NotImplementedError("Please implement the TODO here!")
+        x = self.linear_layer(x)
+        # raise NotImplementedError("Please implement the TODO here!")
 
         return x
 
@@ -291,7 +301,10 @@ class MLP(nn.Module):
         #  Note that since we intend to use nn.CrossEntropyLoss, we do not apply a softmax here 
         #  at the outputs. nn.CrossEntropyLoss incorporates a softmax for better numerical stability.
         #  Read: https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
+
+
         a = self.linear(x)
+
         z = self.non_linearity(a)
         logits = self.final_linear_layer(z)
 
@@ -379,8 +392,16 @@ def evaluate(model, dataloader, tags: Tags):
         for i, (X, y_true) in enumerate(dataloader):
             # TODO: Run the pos tagger on the new batch of data
             #  and obtain the predicted model class for each position
-            y_pred = ...
-            raise NotImplementedError("Please implement the TODO here!")
+            X = np.vstack(X).astype(np.float)
+            X = torch.from_numpy(X).type(torch.LongTensor)
+
+            y_true = np.vstack(y_true).astype(np.float)
+            y_true = torch.from_numpy(y_true).type(torch.FloatTensor)
+
+            logits = model(X)
+
+            y_pred = torch.argmax(logits, 2).type(torch.FloatTensor)
+            # raise NotImplementedError("Please implement the TODO here!")
             assert y_pred.shape == y_true.shape and y_pred.dtype == y_true.dtype, \
                 "The calculated predictions should have the same shapes and data types as the true labels"
 
@@ -426,6 +447,7 @@ def train_one_epoch(model: POSTagger, loss_fn, optimizer, train_loader, epoch):
         train_loader: A pytorch dataloader
         epoch: The number of the current epoch being run
     '''
+
     model.train()
 
     total_loss = 0.0
@@ -437,7 +459,23 @@ def train_one_epoch(model: POSTagger, loss_fn, optimizer, train_loader, epoch):
         # TODO: Implement the training pass for the model
         #  Run the model to get outputs, calculate the loss + fresh gradients, take an optimizer step
         #  Ensure that the 'loss' variable contains the outputs of the loss_fn
+        X = np.vstack(X).astype(np.float)
+        X = torch.from_numpy(X).type(torch.LongTensor)
+
+        y_true = np.vstack(y_true).astype(np.float)
+        y_true = torch.from_numpy(y_true).type(torch.FloatTensor)
+
         logits = model(X)
+
+        y_preds = torch.argmax(logits, 2).type(torch.FloatTensor)
+
+
+        loss = loss_fn(y_preds, y_true)
+        loss.requires_grad = True
+        # Backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
         # raise NotImplementedError("Please implement the TODO here!")
         total_loss += loss.item()
         batch_bar.update()
